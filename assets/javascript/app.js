@@ -1,33 +1,85 @@
-// i. Global Variables + Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// -------------------- I. Global Variables + Functions --------------------
 var qa = [{
         question: "Who won NBA's Most Valuable Player during the 2016-2017 season?",
-        answers: ["Russell Westbrook", "James Harden", "Kevin Durant", "Lebron James"]
+        options: ["Russell Westbrook", "James Harden", "Kevin Durant", "Lebron James"],
+        answer: "Russell Westbrook",
+        image: "assets/images/westbrook.gif"
+
     },
     {
         question: "What NBA hoopster is known as the \"Baby-Faced Assasin\"?",
-        answers: ["Stephen Curry", "Kyrie Irving", "Lonzo Ball", "Devin Booker"]
+        options: ["Stephen Curry", "Kyrie Irving", "Lonzo Ball", "Devin Booker"],
+        answer: "Stephen Curry",
+        image: "assets/images/curry.gif"
     },
     {
         question: "Who was the last team to win 3 consecutive championships?",
-        answers: ["Los Angeles Lakers", "Chicago Bulls", "Boston Celtics", "Golden State Warriors"]
+        options: ["Los Angeles Lakers", "Chicago Bulls", "Boston Celtics", "Golden State Warriors"],
+        answer: "Los Angeles Lakers",
+        image: "assets/images/lakers.gif"
     },
     {
         question: "Which of the following dances was popularized by star of the Houston Rockets, James Harden?",
-        answers: ["The Swag Cook", "The Dab", "The Quan", "Square Dancing"]
+        options: ["Swag Cooking", "The Dab", "The Quan", "Square Dancing"],
+        answer: "Swag Cooking",
+        image: "assets/images/harden.gif"
     },
     {
-        question: "In pop culture, which basketball family is considered to be the \"Kardashians\" of the NBA?",
-        answers: ["Ball Family", "Curry Family", "[Lebron] James Family", "Jelly Fam"]
+        question: "In pop culture, which basketball family is considered as the \"Kardashians\" of the NBA?",
+        options: ["Ball Family", "Curry Family", "[Lebron] James Family", "Jelly Fam"],
+        answer: "Ball Family",
+        image: "assets/images/ballfamily.gif"
     }
 ];
-
-var answerArr = ["Russell Westbrook", "Stephen Curry", "Los Angeles Lakers", "The Swag Cook", "Ball Family"];
-// var oldQ[];
-// var arrayofAnswers[];
+var answerArr = ["Russell Westbrook", "Stephen Curry", "Los Angeles Lakers", "Swag Cooking", "Ball Family"];
+// Prevents the clock from being sped up unnecessarily
+var clockRunning = false;
+// Keeps track of question displayed
 var count = 0;
+// Holds timeout/interval functions
+var startTimeout;
+var nextQTimeout;
+var intervalId;
 
-// ii. Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//Fisher Yates Shuffle method (shuffles questions or answers when called)
+// -------------------- II. Functions --------------------
+// Stopwatch object
+var stopwatch = {
+    time: 15,
+    reset: function() {
+        stopwatch.time = 15;
+        $(".timer").html("00:15")
+    },
+    start: function() {
+        if (!clockRunning) {
+            intervalId = setInterval(stopwatch.clock, 1000);
+            clockRunning = true;
+        }
+    },
+    stop: function() {
+        clearInterval(intervalId);
+        clockRunning = false;
+    },
+    clock: function() {
+        stopwatch.time--;
+        var converted = stopwatch.timeConverter(stopwatch.time);
+        $(".timer").html(converted);
+    },
+    timeConverter: function(t) {
+        var minutes = Math.floor(t / 60);
+        var seconds = t - (minutes * 60);
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        if (minutes === 0) {
+            minutes = "00";
+        } else if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        return minutes + ":" + seconds;
+    }
+};
+
+//Fisher Yates Shuffle method (shuffles questions or options when called)
 Array.prototype.shuffle = function() {
     var i = this.length,
         j, temp;
@@ -39,89 +91,112 @@ Array.prototype.shuffle = function() {
     }
     return this;
 };
-
-//Displays correct answers image
-function displayImage() {
-    $('#image-holder').html("<img src='assets/images/" + imageArr[count] + ".png' width='400px'>");
-};
-
-//Displays questions
-function displayQuestion(Q) {
-    $('.question').html("<h2>" + qaShuffled[Q].question + "</h2>");
-    $('.answerA').html("<button>A: <span class='options'>" + aShuffled[0] + "</span></button>");
-    $('.answerB').html("<button>B: <span class='options'>" + aShuffled[1] + "</span></button>");
-    $('.answerC').html("<button>C: <span class='options'>" + aShuffled[2] + "</span></button>");
-    $('.answerD').html("<button>D: <span class='options'>" + aShuffled[3] + "</span></button>");
-};
-
 //Shuffle Questions
 var qaShuffled = qa.shuffle();
-//Shuffle Answers
-var aShuffled = qaShuffled[0].answers.shuffle();
+//Shuffle options
+var aShuffled;
 
-
-// +++++++++
-// function stopWatch() {
-
-// };
-
-function startGame (Q) {
-    displayQuestion(Q);
-    // setInterval(displayImage, 30000)
+//Displays questions
+function displayQuestion() {
+    //Shuffle options
+    aShuffled = qaShuffled[count].options.shuffle();
+    $('.question').html("<h2>" + qaShuffled[count].question + "</h2>");
+    $('.answerA').html("<button>A: <span class='select'>" + aShuffled[0] + "</span></button>");
+    $('.answerB').html("<button>B: <span class='select'>" + aShuffled[1] + "</span></button>");
+    $('.answerC').html("<button>C: <span class='select'>" + aShuffled[2] + "</span></button>");
+    $('.answerD').html("<button>D: <span class='select'>" + aShuffled[3] + "</span></button>");
 };
 
+//Displays image of correct choice
+function displayImage() {
+    $('#image-holder').html("<img src='" + qaShuffled[count].image + "' width='400px'>");
+};
 
-// iii. Main Process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Displays correct answer screen
+function displayCorrect() {
+    clearTimeout(startTimeout);
+    displayImage();
+    nextQTimeout = setTimeout(nextQuestion, 5000);
+    $('.trivia').hide();
+    $('.imageContainer').show();
+    $('.imageContent').show().html("<h2>Correct!</h2>" + "<h3>You Answered: " + qaShuffled[count].answer + "</h3>");
+    // displayImage();
+    // nextQTimeout = setTimeout(nextQuestion, 5000);
+}
+
+// Displays incorrect answer screen
+function displayIncorrect() {
+    clearTimeout(startTimeout);
+    displayImage();
+    nextQTimeout = setTimeout(nextQuestion, 5000);
+    $('.trivia').hide();
+    $('.imageContainer').show();
+    $('.imageContent').show().html("<h2>Nope!</h2>" + "<h3>The Correct Answer was: " + qaShuffled[count].answer + "</h3>");
+    // displayImage();
+    // nextQTimeout = setTimeout(nextQuestion, 5000);
+}
+
+// Displays out of time answer screen
+function displayOutOfTime() {
+    displayImage();
+    nextQTimeout = setTimeout(nextQuestion, 5000);
+    clearTimeout(startTimeout);
+    $('.trivia').hide();
+    $('.imageContainer').show();
+    $('.imageContent').show().html("<h2>Out of Time!</h2>" + "<h3>The Correct Answer was: " + qaShuffled[count].answer + "</h3>");
+    // displayImage();
+    // nextQTimeout = setTimeout(nextQuestion, 5000);
+}
+
+function nextQuestion() {
+    count++;
+    stopwatch.reset();
+    startGame();
+    $('.trivia').show();
+    $('.imageContainer').hide();
+};
+
+function startGame() {
+    displayQuestion(count);
+    startTimeout = setTimeout(displayOutOfTime, 15000);
+    stopwatch.start();
+};
+
+// -------------------- III. Main Process --------------------
 // Display the page with the start button
 $(document).ready(function() {
 
     // Click on button to begin game
-    $('#start').on('click', function () {
+    $('#start').on('click', function() {
         startGame(count);
+        $('#buttons').hide();
     });
-    // displayQuestion(0);
-
-    // function startGame() {
-    //     setInterval(displayImage, 30000)
-    // }
-
-    // // ++++++++++
-    // stopWatch();
 
 
     // Determines whether answer is correct or wrong
-    $(document).on('click', '.options', function() {
+    $(document).on('click', '.select', function() {
         var userSelect = $(this).html();
         console.log(userSelect, "Choice");
         console.log(answerArr.indexOf(userSelect), "IndexOf");
         if (answerArr.indexOf(userSelect) >= 0) {
-            alert("Correct!");
+            displayCorrect();
         } else {
-            console.log("Try again.");
+            displayIncorrect();
         }
-
-
-
     });
-
-
-
-    //TESTING
-    // console.log(test, "OUTSIDE");
-
 
 
     // Click the start button 
 
     // Randomize the array
 
-    // Display the question and answers
+    // Display the question and options
 
     // Set timer for 30 seconds
 
-    // If you guess the correct answer in 30 seconds, up the win count, display image, display array[1] question and answers
+    // If you guess the correct answer in 30 seconds, up the win count, display image, display array[1] question and options
 
-    // If you guess the wrong answers, display that you lost, and image of the new correct answer
+    // If you guess the wrong options, display that you lost, and image of the new correct answer
 
     // The timer can run out, you lose, display the correct answer
 
@@ -134,12 +209,6 @@ $(document).ready(function() {
     // Have a button to reset the game
 
     //
-
-
-    // TEST ONE
-
-
-
 
 
 
