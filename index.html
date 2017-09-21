@@ -3,34 +3,50 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Trivia Game</title>
+    <title>NBA Trivia Game</title>
     <!--    Reset CSS -->
     <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
     <!--    Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <!--    Google Fonts  -->
+    <link href="https://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister|Monoton" rel="stylesheet">
     <!--    Local CSS -->
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 </head>
 
 <body>
+    <header>
+        <a href="index.html"><img src="assets/images/nba-header.gif"></a>
+        <h2>NBA's 2016-2017</h2>
+        <h3>Trivia Crack!</h3>
+    </header>
     <div class="container">
-        <!-- <body class="page-0">
-    <div id="start">
-        <a href="">Start Game!</a>
-    </div> -->
         <div id="buttons">
+            <h1>Are you an NBA wizard?</h3>
+            <br>
+            <h5>You only have 15 seconds to answer each question. Test your knowledge and compare scores with your friends!</h5>
+            <br>
+            <h3>Instructions: Click to begin!</h3>
             <button id="start" class="btn btn-primary btn-lg btn-block">
-                <h2>Start</h2></button>
-                <h3>Instructions: Click to begin!</h3>
+                <h2>Start Game!</h2>
+            </button>
         </div>
         <div class="mainContent">
             <div class="trivia">
                 <div class="timer"></div>
                 <div class="question" id="q1"></div>
-                <div class="answerA"></div>
-                <div class="answerB"></div>
-                <div class="answerC"></div>
-                <div class="answerD"></div>
+                <div class="answers">
+                    <button type='button' class='btn btn-primary btn-sm'><bold>A: </bold><span class='answerA select'></span></button>
+                </div>
+                <div class="answers">
+                    <button type='button' class='btn btn-primary btn-sm'><bold>B: </bold><span class='answerB select'></span></button>
+                </div>
+                <div class="answers">
+                    <button type='button' class='btn btn-primary btn-sm'><bold>C: </bold><span class='answerC select'></span></button>
+                </div>
+                <div class="answers">
+                    <button type='button' class='btn btn-primary btn-sm'><bold>D: </bold><span class='answerD select'></span></button>
+                </div>
             </div>
             <div class="imageContainer">
                 <div class="imageContent">
@@ -39,7 +55,6 @@
             </div>
         </div>
         <!-- jQuery -->
-        <!--     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <!-- JavaScript -->
         <script type="text/javascript" src="assets/javascript/app.js"></script>

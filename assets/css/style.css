@@ -1,53 +1,123 @@
 * {
-	text-align: center;
-	margin: 0 auto;
-
+    text-align: center;
+    margin: 0 auto;
 }
 
 body {
-	background-image: url(../images/background-4.jpg);
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-/*  width: 960px;*/
-  height: 680px;
-/*	font-family: 'VT323', monospace;*/
-/*	font-family: 'Share Tech Mono', monospace;*/
+    background-image: url(../images/background-2.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 720px;
+}
+
+header {
+    display: inline;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 720px;
 }
 
 .container {
-  background: white;
-  background-color:rgba(0, 0, 0, 0.5);
-  width: 680px;
-  height: 500px;
-  margin-top: 100px;
-  padding: 20px;
+    background: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 680px;
+    height: 525px;
+    margin-top: 200px;
+    padding: 20px;
 }
 
-#buttons h3 {
-  color: white;
-  margin: 25px;
+.moveUpDiv {
+    margin-top: 30px;
 }
 
 #buttons {
- margin-top: 25px;
+    color: white;
+    margin: 25px;
 }
+
 
 .mainContent {
-  color: white;
-  text-shadow: -0.25px 0 black, 0 0.25px black, 0.25px 0 black, 0 -0.25px black;
+    color: white;
+    text-shadow: -0.25px 0 black, 0 0.25px black, 0.25px 0 black, 0 -0.25px black;
 }
 
-.answerA, .answerB, .answerC, .answerD {
-  margin-top: 20px;
-  margin-bottom: 20px;
+.answers {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
+.select {
+    font-size: 18px;
+    width: 100%;
+}
+
+.imageContainer {
+    padding-top: 20px;
+}
+
+
+/* Places a title  over header image */
+header {
+    height: 900px;
+    width: 900px;
+    position: relative;
+}
+
+header img {
+    position: absolute;
+    left: -525px;
+    top: -200px;
+}
+
+header h2 {
+    z-index: 100;
+    position: absolute;
+    color: white;
+    font-size: 60px;
+    font-weight: bold;
+    left: -475px;
+    top: -155px;
+    /*  font-family: 'Monoton', cursive;*/
+    font-family: 'Love Ya Like A Sister', cursive;
+}
+
+header h3 {
+    z-index: 100;
+    position: absolute;
+    color: white;
+    font-size: 60px;
+    font-weight: bold;
+    left: 60px;
+    top: -155px;
+    white-space: nowrap;
+    /*  font-family: 'Monoton', cursive;*/
+    font-family: 'Love Ya Like A Sister', cursive;
+}
+
+
+/* For the ticking clock */
 .timer {
-  font-family: monospace;
-  font-size: 100px;
-  color: white;
-  /* Typography */
-  text-align: center;
-  /* Visual */
-  background: blue;
+    font-family: monospace;
+    font-size: 100px;
+    color: white;
+    /* Typography */
+    text-align: center;
+    /* Visual */
+    background: blue;
+}
+
+.redText {
+  color: red;
+  text-shadow: none;
+  font-weight: bold;
+}
+
+.greenText {
+  color: green;
+  text-shadow: none;
+  font-weight: bold;
+}
+
+.tryAgain {
+  text-decoration: none;
 }

@@ -1,4 +1,4 @@
-// -------------------- I. Global Variables + Functions --------------------
+// -------------------- I. VARIABLES --------------------
 var qa = [{
         question: "Who won NBA's Most Valuable Player during the 2016-2017 season?",
         options: ["Russell Westbrook", "James Harden", "Kevin Durant", "Lebron James"],
@@ -31,17 +31,21 @@ var qa = [{
         image: "assets/images/ballfamily.gif"
     }
 ];
+// Array of answers
 var answerArr = ["Russell Westbrook", "Stephen Curry", "Los Angeles Lakers", "Swag Cooking", "Ball Family"];
 // Prevents the clock from being sped up unnecessarily
 var clockRunning = false;
 // Keeps track of question displayed
 var count = 0;
+var correct = 0;
+var wrong = 0;
 // Holds timeout/interval functions
 var startTimeout;
 var nextQTimeout;
 var intervalId;
 
-// -------------------- II. Functions --------------------
+
+// -------------------- II. FUNCTIONS --------------------
 // Stopwatch object
 var stopwatch = {
     time: 15,
@@ -79,7 +83,7 @@ var stopwatch = {
     }
 };
 
-//Fisher Yates Shuffle method (shuffles questions or options when called)
+// Fisher Yates Shuffle method (shuffles order of questions or answer options)
 Array.prototype.shuffle = function() {
     var i = this.length,
         j, temp;
@@ -91,87 +95,111 @@ Array.prototype.shuffle = function() {
     }
     return this;
 };
-//Shuffle Questions
+// Shuffle Questions
 var qaShuffled = qa.shuffle();
-//Shuffle options
+// Store shuffled answer options
 var aShuffled;
 
-//Displays questions
+// Displays questions
 function displayQuestion() {
-    //Shuffle options
+    // Shuffle answer options
     aShuffled = qaShuffled[count].options.shuffle();
     $('.question').html("<h2>" + qaShuffled[count].question + "</h2>");
-    $('.answerA').html("<button>A: <span class='select'>" + aShuffled[0] + "</span></button>");
-    $('.answerB').html("<button>B: <span class='select'>" + aShuffled[1] + "</span></button>");
-    $('.answerC').html("<button>C: <span class='select'>" + aShuffled[2] + "</span></button>");
-    $('.answerD').html("<button>D: <span class='select'>" + aShuffled[3] + "</span></button>");
+    $('.answerA').html(aShuffled[0]);
+    $('.answerB').html(aShuffled[1]);
+    $('.answerC').html(aShuffled[2]);
+    $('.answerD').html(aShuffled[3]);
 };
 
-//Displays image of correct choice
+// Displays image of correct choice
 function displayImage() {
     $('#image-holder').html("<img src='" + qaShuffled[count].image + "' width='400px'>");
 };
 
 // Displays correct answer screen
 function displayCorrect() {
+    correct++;
     clearTimeout(startTimeout);
     displayImage();
     nextQTimeout = setTimeout(nextQuestion, 5000);
     $('.trivia').hide();
     $('.imageContainer').show();
-    $('.imageContent').show().html("<h2>Correct!</h2>" + "<h3>You Answered: " + qaShuffled[count].answer + "</h3>");
-    // displayImage();
-    // nextQTimeout = setTimeout(nextQuestion, 5000);
-}
+    $('.imageContent').show().html("<h2><span class='greenText'>Correct!</span></h2><br>" + "<h3>You Answered: " + qaShuffled[count].answer + "</h3>");
+};
 
 // Displays incorrect answer screen
 function displayIncorrect() {
+    wrong++;
     clearTimeout(startTimeout);
     displayImage();
     nextQTimeout = setTimeout(nextQuestion, 5000);
     $('.trivia').hide();
     $('.imageContainer').show();
-    $('.imageContent').show().html("<h2>Nope!</h2>" + "<h3>The Correct Answer was: " + qaShuffled[count].answer + "</h3>");
-    // displayImage();
-    // nextQTimeout = setTimeout(nextQuestion, 5000);
-}
+    $('.imageContent').show().html("<h2><span class='redText'>Nope!</span></h2><br>" + "<h3>The Correct Answer was: " + qaShuffled[count].answer + "</h3>");
+};
 
 // Displays out of time answer screen
 function displayOutOfTime() {
+    wrong++;
     displayImage();
     nextQTimeout = setTimeout(nextQuestion, 5000);
     clearTimeout(startTimeout);
     $('.trivia').hide();
     $('.imageContainer').show();
-    $('.imageContent').show().html("<h2>Out of Time!</h2>" + "<h3>The Correct Answer was: " + qaShuffled[count].answer + "</h3>");
-    // displayImage();
-    // nextQTimeout = setTimeout(nextQuestion, 5000);
-}
-
-function nextQuestion() {
-    count++;
-    stopwatch.reset();
-    startGame();
-    $('.trivia').show();
-    $('.imageContainer').hide();
+    $('.imageContent').show().html("<h2><span class='redText'>Out of Time!</span></h2><br>" + "<h3>The Correct Answer was: " + qaShuffled[count].answer + "</h3>");
 };
 
+
+// Displays results screen
+function displayResults() {
+    
+    $('#image-holder').empty();
+    clearTimeout(startTimeout);
+    $('.trivia').hide();
+    $('.imageContainer').show();
+    $('.imageContent').show().html("<h2>Want to claim a better score?</h2> <h2><a href='index.html' class='tryAgain'>Click to try Again!</a></h2><br>" + "<h3>Correct: <span class='greenText'>" + correct + "</span></h3><h3>Wrong: <span class='redText'>" + wrong + "</span></h3>");
+    $("header").show();
+};
+
+
+// Displays next set of questions
+function nextQuestion() {
+    count++;
+    if (count >= qa.length) {
+        displayResults();
+    } else {
+        stopwatch.reset();
+        startGame();
+        $('.trivia').show();
+        $('.imageContainer').hide();
+    };
+};
+
+// Begins the game
 function startGame() {
     displayQuestion(count);
     startTimeout = setTimeout(displayOutOfTime, 15000);
     stopwatch.start();
 };
 
-// -------------------- III. Main Process --------------------
-// Display the page with the start button
+// When user clicks start button, show/hide/moves various containers
+function startButton() {
+    $('.container').addClass("moveUpDiv");
+    $('.mainContent').show();
+    $('#buttons').hide();
+    $("header").hide();
+};
+
+// -------------------- III. MAIN PROCSS --------------------
 $(document).ready(function() {
+
+    $('.mainContent').hide();
 
     // Click on button to begin game
     $('#start').on('click', function() {
+        startButton();
         startGame(count);
-        $('#buttons').hide();
     });
-
 
     // Determines whether answer is correct or wrong
     $(document).on('click', '.select', function() {
@@ -182,34 +210,33 @@ $(document).ready(function() {
             displayCorrect();
         } else {
             displayIncorrect();
-        }
+        };
     });
-
-
-    // Click the start button 
-
-    // Randomize the array
-
-    // Display the question and options
-
-    // Set timer for 30 seconds
-
-    // If you guess the correct answer in 30 seconds, up the win count, display image, display array[1] question and options
-
-    // If you guess the wrong options, display that you lost, and image of the new correct answer
-
-    // The timer can run out, you lose, display the correct answer
-
-    // Reset the timer
-
-    // Go to the next question
-
-    // Repeat till last question
-
-    // Have a button to reset the game
-
-    //
-
-
-
 });
+
+
+// PSEUDO CODE:
+
+// Click the start button 
+
+// Randomize the array
+
+// Display the question and options
+
+// Set timer for 30 seconds
+
+// If you guess the correct answer in 30 seconds, up the win count, display image, display array[1] question and options
+
+// If you guess the wrong options, display that you lost, and image of the new correct answer
+
+// The timer can run out, you lose, display the correct answer
+
+// Reset the timer
+
+// Go to the next question
+
+// Repeat till last question
+
+// Have a button to reset the game
+
+//
