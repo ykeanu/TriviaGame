@@ -1,4 +1,4 @@
-#NBA's 2016-2017 Season: Trivia Game!
+# NBA's 2016-2017 Season: Trivia Game!
 
 This is a fan-made, Trivia game that tests your knowledge on NBA pop culture of the 2016 to 2017 season.
 
